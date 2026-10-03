@@ -1,1 +1,15 @@
-
+{
+  "prefix": ".",
+  "mode": "private",
+  "owner": "50932271345",
+  "botName": "KING-MD",
+  "version": "3.0.0",
+  "botUser": "KING",
+  "botNumber": "50932271345",
+  "menuImage": "https://i.ibb.co/Cpsr8XQJ/jawadmd.jpg",
+  "autoJoinGroup": "https://chat.whatsapp.com/LD552OxNd8S66blj7Jgo8H",
+  "alive": "KING-MD is online!",
+  "sudo": [],
+  "blocked": [],
+  "groups": {}
+}
