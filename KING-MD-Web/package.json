@@ -1,0 +1,14 @@
+{
+  "name":"king-md-web-pairing",
+  "version":"1.0.0",
+  "description":"KING-MD-V1 Pairing FIX V2 - public web pairing panel",
+  "type":"module",
+  "main":"src/index.js",
+  "scripts":{"start":"node src/index.js"},
+  "engines":{"node":">=20"},
+  "dependencies":{
+    "@whiskeysockets/baileys":"6.7.24",
+    "express":"^5.1.0",
+    "pino":"^9.7.0"
+  }
+}
