@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KING-MD — Pairing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05050b;
+  --bg-2:#090b18;
+  --panel:#0d1020;
+  --line:#25204a;
+  --purple:#9b5cff;
+  --purple-2:#6d35ff;
+  --blue:#25a7ff;
+  --text:#f2f0ff;
+  --muted:#9698b5;
+  --ok:#6ee7b7;
+  --err:#ff6b81;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  font-family:'Space Grotesk',Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(109,53,255,.24) 0%, transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(37,167,255,.10) 0%, transparent 35%),
+    var(--bg);
+  color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.sky span{
+  position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;
+  opacity:.5;animation:twinkle 4s ease-in-out infinite;
+}
+@keyframes twinkle{0%,100%{opacity:.15;}50%{opacity:.85;}}
+.card{
+  position:relative;z-index:1;
+  width:min(520px,100%);
+  background:linear-gradient(180deg, rgba(16,15,35,.96) 0%, rgba(7,9,20,.98) 100%);
+  border:1px solid rgba(145,91,255,.30);
+  border-radius:24px;
+  padding:26px;
+  box-shadow:0 30px 90px -35px rgba(0,0,0,.9), 0 0 45px rgba(109,53,255,.10);
+  animation:cardFloat 5s ease-in-out infinite;
+  overflow:hidden;
+}
+@keyframes cardFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+.card::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(135deg, rgba(155,92,255,.65), rgba(37,167,255,.35), transparent 55%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;
+}
+.card::after{
+  content:"";position:absolute;width:180px;height:180px;left:50%;top:-125px;
+  transform:translateX(-50%);
+  background:rgba(109,53,255,.18);filter:blur(45px);border-radius:50%;
+  pointer-events:none;
+}
+.logo{font-family:'Cinzel',serif;font-size:26px;font-weight:900;letter-spacing:2px;text-align:center;
+  background:linear-gradient(90deg,#cba4ff,#8b5cff,#25a7ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 18px rgba(155,92,255,.4);
+  animation:crownPulse 3s ease-in-out infinite;
+}
+@keyframes crownPulse{
+  0%,100%{transform:translateY(0) scale(1);filter:brightness(1);}
+  50%{transform:translateY(-2px) scale(1.03);filter:brightness(1.25);}
+}
+.sub{text-align:center;color:var(--muted);margin:8px 0 24px;font-size:13px;}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:16px}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:7px}
+input{width:100%;padding:14px;border-radius:12px;border:1px solid var(--line);background:#0a0c18;color:var(--text);font-size:16px;outline:none}
+input:focus{border-color:var(--purple)}
+button{width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;
+  background:linear-gradient(180deg,var(--purple),var(--purple-2));color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+button.alt{background:var(--panel);color:var(--text);border:1px solid var(--line);}
+.code{font-size:34px;font-weight:900;letter-spacing:4px;text-align:center;padding:20px 5px;color:var(--blue);min-height:80px}
+.status{text-align:center;color:var(--muted);font-size:14px;line-height:1.5}
+.steps{color:#c9ceda;font-size:14px;line-height:1.7}
+.small{font-size:12px;color:var(--muted);margin-top:14px;text-align:center}
+.ok{color:var(--ok)}
+.err{color:var(--err)}
+.links-row{display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;}
+.links-row a{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 14px;border:1px solid var(--line);border-radius:999px;
+  color:var(--text);text-decoration:none;font-size:12px;
+  background:rgba(155,92,255,.06);transition:all .25s ease;
+}
+.links-row a:hover{border-color:#9b5cff;box-shadow:0 0 12px rgba(155,92,255,.35);}
+footer{text-align:center;margin-top:18px;font-family:'Cinzel',serif;font-size:12px;color:var(--muted);letter-spacing:.06em;}
+footer span{color:var(--line);margin:0 6px;}
+</style>
+</head>
+<body>
+<div class="sky" id="sky"></div>
+<main class="card">
+  <div class="logo">👑 KING-MD</div>
+  <div class="sub">KING-MD V1 · PAIRING FIX V2 · WEB</div>
+
+  <div class="box">
+    <label>Numéro WhatsApp à connecter</label>
+    <input id="number" inputmode="numeric" placeholder="509XXXXXXXX">
+    <label style="margin-top:14px">Nombre de tentatives (1–3)</label>
+    <input id="attempts" type="number" min="1" max="3" value="2">
+    <button onclick="pair()">🔗 GÉNÉRER LE CODE</button>
+  </div>
+
+  <div class="box">
+    <div class="status" id="status">Prêt.</div>
+    <div class="code" id="code">----</div>
+    <div class="steps"><b>Dans WhatsApp :</b><br>1. Appareils connectés<br>2. Connecter un appareil<br>3. Connecter avec un numéro de téléphone<br>4. Entre le code affiché ci-dessus</div>
+  </div>
+
+  <button class="alt" onclick="resetSession()">♻️ RÉINITIALISER LA SESSION (AUTH_INFO)</button>
+  <div class="small">Ne partage jamais ce code ni le dossier auth_info.</div>
+
+  <div class="links-row">
+    <a href="https://whatsapp.com/channel/0029VbCY0ob7YSd0Oc9d650O" target="_blank">📢 Chaîne</a>
+    <a href="https://chat.whatsapp.com/LD552OxNd8S66blj7Jgo8H" target="_blank">💬 Groupe</a>
+    <a href="https://t.me/king_stark821" target="_blank">✈️ Telegram</a>
+    <a href="https://king-generator-ai.lovable.app/" target="_blank">🤖 KING GENERATOR</a>
+  </div>
+
+  <footer>𝐊𝐈𝐍𝐆-𝐌𝐃 <span>•</span> 𝘣𝑦 𝐊𝐈𝐍𝐆 𝐒𝐓𝐀𝐑𝐊</footer>
+</main>
+<script>
+(function stars(){
+  const sky = document.getElementById('sky');
+  for(let i=0;i<50;i++){
+    const s = document.createElement('span');
+    s.style.left = Math.random()*100+'vw';
+    s.style.top = Math.random()*100+'vh';
+    s.style.animationDelay = (Math.random()*4)+'s';
+    sky.appendChild(s);
+  }
+})();
+
+async function pair(){const number=document.getElementById('number').value;const attempts=document.getElementById('attempts').value;setStatus('⏳ Connexion à WhatsApp et génération du code…');document.getElementById('code').textContent='----';try{const r=await fetch('/api/pair',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({number,attempts})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||'Erreur');document.getElementById('code').textContent=d.code;setStatus('✅ Code généré. Entre-le immédiatement dans WhatsApp.','ok')}catch(e){setStatus('❌ '+e.message,'err')}}
+async function resetSession(){if(!confirm('Supprimer la session WhatsApp locale ?'))return;try{const r=await fetch('/api/logout',{method:'POST'});const d=await r.json();setStatus(d.message||'Session réinitialisée.')}catch(e){setStatus('❌ '+e.message,'err')}}
+function setStatus(t,c=''){const x=document.getElementById('status');x.textContent=t;x.className='status '+c}
+</script>
+</body></html>
