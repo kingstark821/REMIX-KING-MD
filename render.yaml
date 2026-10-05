@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: king-md
+    env: node
+    plan: starter
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 24.21.0
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: WEB_TOKEN
+        sync: false
+      - key: MAX_PAIRING_ATTEMPTS
+        value: 3
+      - key: GEMINI_API_KEY
+        sync: false

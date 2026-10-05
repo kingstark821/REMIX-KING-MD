@@ -15,6 +15,7 @@
     "@whiskeysockets/baileys": "6.7.24",
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
+    "grammy": "^1.30.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "pino": "^9.7.0",
