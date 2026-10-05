@@ -5,14 +5,16 @@
 // ⚠️ Non testé contre un vrai token Telegram (pas d'accès réseau dans mon
 // environnement). La structure suit l'API officielle de la librairie "grammy",
 // à vérifier en conditions réelles après déploiement.
+//
+// Format HTML (pas Markdown) partout : Markdown casse dès qu'une valeur
+// dynamique contient _ * [ ] etc. (ex: un username Telegram avec underscores).
+// HTML + échappement systématique des valeurs dynamiques évite ce problème.
 
 import { Bot, InlineKeyboard } from 'grammy';
 import fs from 'fs';
 import path from 'path';
 
 // 👑 Message "royal" affiché quand une commande échoue ou qu'un cas n'est pas géré.
-// Placeholder volontaire — demande à ton autre assistant (qui connaît ton style)
-// de le réécrire, puis remplace juste cette ligne.
 const ROYAL_FALLBACK =
   "👑 Commande invalide ou échouée : cette action n'existe pas dans le Royaume. Vérifie la commande et réessaie.";
 
@@ -38,6 +40,15 @@ function loadSettings() {
   }
 }
 
+// Échappe les caractères spéciaux HTML pour toute valeur dynamique injectée
+// dans un message (settings.json, variables d'env) — évite de casser le parsing.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 const startedAt = Date.now();
 
 function formatUptime(seconds: number): string {
@@ -60,6 +71,8 @@ export function startTelegramBot() {
     const s = loadSettings();
     const channelUrl = s.channel || 'https://whatsapp.com/channel/0029VbCY0ob7YSd0Oc9d650O';
     const groupUrl = s.autoJoinGroup || 'https://chat.whatsapp.com/LD552OxNd8S66blj7Jgo8H';
+    const botName = escapeHtml(s.botName || 'KING-MD');
+    const botUsername = process.env.TELEGRAM_BOT_USERNAME;
 
     // ⚠️ Telegram ne permet pas de couleur de fond personnalisée sur les boutons —
     // les émojis 🟢🔵🔴 servent de repère visuel, ce n'est pas une vraie couleur.
@@ -69,19 +82,19 @@ export function startTelegramBot() {
       .row()
       .url('🔴 KING GENERATOR', 'https://king-generator-ai.lovable.app');
 
-    const botUsername = process.env.TELEGRAM_BOT_USERNAME;
     await ctx.reply(
-      `👑 *${s.botName || 'KING-MD'}*${botUsername ? ` (@${botUsername})` : ''}\n\n` +
+      `👑 <b>${botName}</b>${botUsername ? ` (@${escapeHtml(botUsername)})` : ''}\n\n` +
       `Bienvenue sur le bot Telegram officiel.\n` +
       `Tape /menu pour voir les commandes disponibles.`,
-      { parse_mode: 'Markdown', reply_markup: keyboard }
+      { parse_mode: 'HTML', reply_markup: keyboard }
     );
   });
 
   bot.command('menu', async (ctx) => {
     const s = loadSettings();
+    const botName = escapeHtml(s.botName || 'KING-MD');
     await ctx.reply(
-      `👑 *${s.botName || 'KING-MD'} — Menu Telegram*\n\n` +
+      `👑 <b>${botName} — Menu Telegram</b>\n\n` +
       `/start — démarrer\n` +
       `/menu — ce menu\n` +
       `/ping — tester si le bot répond\n` +
@@ -89,7 +102,7 @@ export function startTelegramBot() {
       `/channel — lien de la chaîne WhatsApp officielle\n` +
       `/group — lien du groupe WhatsApp officiel\n` +
       `/owner — contact du propriétaire`,
-      { parse_mode: 'Markdown' }
+      { parse_mode: 'HTML' }
     );
   });
 
@@ -104,7 +117,7 @@ export function startTelegramBot() {
     const s = loadSettings();
     const uptime = formatUptime(Math.floor((Date.now() - startedAt) / 1000));
     await ctx.reply(
-      `${s.alive || 'KING-MD is online! 🟢'}\n\n` +
+      `${escapeHtml(s.alive || 'KING-MD is online! 🟢')}\n\n` +
       `⏱️ Uptime : ${uptime}`
     );
   });
@@ -112,17 +125,17 @@ export function startTelegramBot() {
   bot.command('channel', async (ctx) => {
     const s = loadSettings();
     const url = s.channel || 'https://whatsapp.com/channel/0029VbCY0ob7YSd0Oc9d650O';
-    await ctx.reply(`📢 *Chaîne officielle*\n${url}`, { parse_mode: 'Markdown' });
+    await ctx.reply(`📢 <b>Chaîne officielle</b>\n${escapeHtml(url)}`, { parse_mode: 'HTML' });
   });
 
   bot.command('group', async (ctx) => {
     const s = loadSettings();
     const url = s.autoJoinGroup || 'https://chat.whatsapp.com/LD552OxNd8S66blj7Jgo8H';
-    await ctx.reply(`💬 *Groupe officiel*\n${url}`, { parse_mode: 'Markdown' });
+    await ctx.reply(`💬 <b>Groupe officiel</b>\n${escapeHtml(url)}`, { parse_mode: 'HTML' });
   });
 
   bot.command('owner', async (ctx) => {
-    await ctx.reply(`👑 *Propriétaire*\n✈️ Telegram : https://t.me/king_stark821`, { parse_mode: 'Markdown' });
+    await ctx.reply(`👑 <b>Propriétaire</b>\n✈️ Telegram : https://t.me/king_stark821`, { parse_mode: 'HTML' });
   });
 
   bot.catch((err) => {
