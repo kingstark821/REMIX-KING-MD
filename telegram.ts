@@ -77,10 +77,9 @@ export function startTelegramBot() {
     // ⚠️ Telegram ne permet pas de couleur de fond personnalisée sur les boutons —
     // les émojis 🟢🔵🔴 servent de repère visuel, ce n'est pas une vraie couleur.
     const keyboard = new InlineKeyboard()
-      .url('🔵 Chaîne WhatsApp', channelUrl)
-      .url('🟢 Groupe WhatsApp', groupUrl)
-      .row()
-      .url('🔴 KING GENERATOR', 'https://king-generator-ai.lovable.app');
+      .url('🔵 Chaîne WhatsApp', channelUrl).row()
+      .url('🟢 Groupe WhatsApp', groupUrl).row()
+      .url('🔴 KING GENERATOR', 'https://king-generator-ai.lovable.app').row();
 
     await ctx.reply(
       `👑 <b>${botName}</b>${botUsername ? ` (@${escapeHtml(botUsername)})` : ''}\n\n` +
@@ -97,6 +96,8 @@ export function startTelegramBot() {
       `👑 <b>${botName} — Menu Telegram</b>\n\n` +
       `/start — démarrer\n` +
       `/menu — ce menu\n` +
+      `/connect 509XXXXXXXX — connecter un numéro WhatsApp\n` +
+      `/delpair — déconnecter la session WhatsApp active\n` +
       `/ping — tester si le bot répond\n` +
       `/alive — statut + uptime\n` +
       `/channel — lien de la chaîne WhatsApp officielle\n` +
@@ -136,6 +137,61 @@ export function startTelegramBot() {
 
   bot.command('owner', async (ctx) => {
     await ctx.reply(`👑 <b>Propriétaire</b>\n✈️ Telegram : https://t.me/king_stark821`, { parse_mode: 'HTML' });
+  });
+
+  // ⚠️ Ce bot ne gère qu'UNE SEULE connexion WhatsApp à la fois (pas un système
+  // multi-utilisateurs comme /listpair ou /deluser sur d'autres bots). /connect
+  // réutilise directement la même route /api/pair que la page web de pairing.
+  const PORT = process.env.PORT || 3000;
+
+  bot.command('connect', async (ctx) => {
+    const number = (ctx.match || '').toString().replace(/[^0-9]/g, '');
+    if (!number) {
+      await ctx.reply('👑 Utilisation : <code>/connect 509XXXXXXXX</code> (numéro complet, sans +)', { parse_mode: 'HTML' });
+      return;
+    }
+
+    const waitMsg = await ctx.reply('⏳ Génération du code en cours, un instant...');
+
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (process.env.WEB_TOKEN) headers['x-web-token'] = process.env.WEB_TOKEN;
+
+      const res = await fetch(`http://localhost:${PORT}/api/pair`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ number, attempts: 1 })
+      });
+      const data: any = await res.json();
+
+      if (!res.ok || !data.ok) {
+        await ctx.api.editMessageText(waitMsg.chat.id, waitMsg.message_id, `👑 ${escapeHtml(data.error || 'Échec de la génération du code.')}`);
+        return;
+      }
+
+      await ctx.api.editMessageText(
+        waitMsg.chat.id,
+        waitMsg.message_id,
+        `🔑 <b>Code de pairing :</b> <code>${escapeHtml(data.code)}</code>\n\n` +
+        `Ouvre WhatsApp &gt; Appareils connectés &gt; Connecter avec un numéro de téléphone, entre ce code rapidement avant qu'il expire.`,
+        { parse_mode: 'HTML' }
+      );
+    } catch (e: any) {
+      await ctx.api.editMessageText(waitMsg.chat.id, waitMsg.message_id, ROYAL_FALLBACK);
+    }
+  });
+
+  bot.command('delpair', async (ctx) => {
+    try {
+      const headers: Record<string, string> = {};
+      if (process.env.WEB_TOKEN) headers['x-web-token'] = process.env.WEB_TOKEN;
+
+      const res = await fetch(`http://localhost:${PORT}/api/logout`, { method: 'POST', headers });
+      const data: any = await res.json();
+      await ctx.reply(data.message ? `👑 ${escapeHtml(data.message)}` : '👑 Session WhatsApp déconnectée.');
+    } catch {
+      await ctx.reply(ROYAL_FALLBACK);
+    }
   });
 
   bot.catch((err) => {
