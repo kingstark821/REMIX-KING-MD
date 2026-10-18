@@ -387,7 +387,12 @@ app.post('/api/settings', checkAuth, (req: Request, res: Response) => {
   res.json({ ok: true, settings: merged, message: 'Paramètres enregistrés avec succès.' });
 });
 
-app.post('/api/pair', checkAuth, async (req: Request, res: Response) => {
+app.post('/api/pair', async (req: Request, res: Response) => {
+  // Only allow internal server-to-server calls when INTERNAL_SECRET is set
+  if (process.env.INTERNAL_SECRET && req.get('x-internal-secret') !== process.env.INTERNAL_SECRET) {
+    return res.status(404).json({ ok: false, error: 'Not found' });
+  }
+
   const number = cleanNumber(req.body?.number);
   const requestedAttempts = Math.max(1, Math.min(MAX_ATTEMPTS, Number(req.body?.attempts || 1)));
 
