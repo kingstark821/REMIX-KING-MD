@@ -751,7 +751,7 @@ async function ensureSocket() {
       }
 
       // .channel / .chaine
-      if (command' || command === 'chaine') {
+      if (command === 'channel' || command === 'chaine') {
         const channelUrl = settings.channel || 'https://whatsapp.com/channel/0029VbCY0ob7YSd0Oc9d650O';
         await sock.sendMessage(jid, {
           text: `📢 *CHAÎNE OFFICIELLE KING-MD*\n━━━━━━━━━━━━━━━━\nSuivez toutes les actualités, annonces et mises à jour en direct :\n👉 ${channelUrl}`
